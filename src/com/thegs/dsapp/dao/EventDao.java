@@ -5,8 +5,6 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.ws.rs.core.Response;
-
 import com.thegs.dsapp.model.Event;
 
 
@@ -55,11 +53,12 @@ public enum EventDao {
 		return contentStore.get(id);
 	}
 	public void updateEvent(Event newEvent) {
-		contentStore.replace(newEvent.getId(), newEvent);
+		contentStore.remove(newEvent.getId());
+		contentStore.put(newEvent.getId(), newEvent);
 		
 	}
 	public void deleteEvent(Event e) {
-		contentStore.remove(e.getId(), e);
+		contentStore.remove(e.getId());
 		
 	}
 

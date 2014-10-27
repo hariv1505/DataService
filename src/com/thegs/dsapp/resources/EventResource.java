@@ -18,7 +18,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import javax.xml.bind.JAXBElement;
 
 import com.thegs.dsapp.dao.EventDao;
 import com.thegs.dsapp.model.Event;
