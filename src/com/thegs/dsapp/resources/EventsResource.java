@@ -1,7 +1,6 @@
 package com.thegs.dsapp.resources;
 
 import java.util.Collection;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
