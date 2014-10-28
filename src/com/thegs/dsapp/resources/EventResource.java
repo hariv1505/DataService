@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.text.ParseException;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
@@ -22,6 +21,7 @@ import javax.ws.rs.core.UriInfo;
 
 import com.thegs.dsapp.dao.EventDao;
 import com.thegs.dsapp.model.Event;
+import com.thegs.dsapp.model.helper.IncorrectTimeException;
 
 
 
@@ -107,10 +107,8 @@ public class EventResource {
 	}
 	
 	@PUT
-	@Consumes(MediaType.APPLICATION_XML)
 	//@Produces(MediaType.TEXT_HTML)
 	public Response putEvent(
-			@PathParam ("eventID") String id,
 			@HeaderParam("Auth") String auth,
 			@Context HttpServletResponse response) {
 		try {
@@ -139,6 +137,16 @@ public class EventResource {
 			throw new WebApplicationException(Response
 					.status(Response.Status.BAD_REQUEST.getStatusCode())
 					.entity("Bad Request").build());
+		} catch (IncorrectTimeException e) {
+			e.printStackTrace();
+			throw new WebApplicationException(Response
+					.status(Response.Status.BAD_REQUEST.getStatusCode())
+					.entity("Bad Request").build());
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new WebApplicationException(Response
+					.status(Response.Status.BAD_REQUEST.getStatusCode())
+					.entity("Bad Request").build());
 		}
 
 	}
@@ -150,7 +158,7 @@ public class EventResource {
 			if(EventDao.instance.addEvent(newEvent)) {
 				res = Response.noContent().build();
 			} else {
-				res = Response.created(uriInfo.getAbsolutePath()).entity(newEvent).build();
+				res = Response.created(uriInfo.getAbsolutePath()).entity(newEvent.getXML()).build();
 			}
 		} catch (Exception e) {
 			res = Response
@@ -207,37 +215,48 @@ public class EventResource {
 		
 		Event e = EventDao.instance.getEventById(id);
 		
-		if (type.equals("trade")) {
+		try {
 			
-			if (query.equals("xml")) {
-				return e.convert("tradexml");
-			} else if (query.equals("json")) {
-				return e.convert("tradejson");
-			} else if (query.equals("totalprice")) {
-				return e.convert("tradetotalprice");
+			if (type.equals("trade")) {
+				
+				if (query.equals("xml")) {
+					return e.convert("tradexml");
+				} else if (query.equals("json")) {
+					return e.convert("tradejson");
+				} else if (query.equals("totalprice")) {
+					return e.convert("tradetotalprice");
+				} else {
+					throw new WebApplicationException(Response
+							.status(Response.Status.BAD_REQUEST.getStatusCode())
+							.entity("Bad Request")
+							.build());
+				}
+			} else if (type.equals("quote")) {
+				
+				if (query.equals("xml")) {
+					return e.convert("quotexml");
+				} else if (query.equals("json")) {
+					return e.convert("quotejson");
+				} else {
+					throw new WebApplicationException(Response
+							.status(Response.Status.BAD_REQUEST.getStatusCode())
+							.entity("Bad Request")
+							.build());
+				}
 			} else {
 				throw new WebApplicationException(Response
 						.status(Response.Status.BAD_REQUEST.getStatusCode())
 						.entity("Bad Request")
 						.build());
 			}
-		} else if (type.equals("quote")) {
 			
-			if (query.equals("xml")) {
-				return e.convert("quotexml");
-			} else if (query.equals("json")) {
-				return e.convert("quotejson");
-			} else {
-				throw new WebApplicationException(Response
-						.status(Response.Status.BAD_REQUEST.getStatusCode())
-						.entity("Bad Request")
-						.build());
-			}
-		} else {
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
 			throw new WebApplicationException(Response
 					.status(Response.Status.BAD_REQUEST.getStatusCode())
 					.entity("Bad Request")
 					.build());
+			
 		}
 		
 	}

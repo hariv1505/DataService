@@ -76,6 +76,7 @@ public class EventsResource {
 					.entity("Forbidden")
 					.header("authorised", "false").build());
 		}
+		System.out.println(id);
 		return new EventResource(uriInfo, request, id);
 	}
 	

@@ -1,11 +1,13 @@
 package com.thegs.dsapp.dao;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.thegs.dsapp.model.Event;
+import com.thegs.dsapp.model.helper.IncorrectTimeException;
 
 
 public enum EventDao {
@@ -14,28 +16,7 @@ public enum EventDao {
     private Map<String, Event> contentStore = new HashMap<String, Event>();
 
     private EventDao() {
-
-        Event e;
-		try {
-			e = new Event("1");
-			contentStore.put("1", e);
-		} catch (FileNotFoundException e1) {
-			System.err.println("Do not add event set ID 1");
-			e1.printStackTrace();
-		} catch (ParseException e1) {
-			System.err.println("Do not add event set ID 1");
-			e1.printStackTrace();
-		}
-		try {
-	        e = new Event("2");
-	        contentStore.put("2", e);
-		} catch (FileNotFoundException e1) {
-			System.err.println("Do not add event set ID 2");
-			e1.printStackTrace();
-		} catch (ParseException e1) {
-			System.err.println("Do not add event set ID 2");
-			e1.printStackTrace();
-		}
+       
     }
     public Map<String, Event> getStore(){
         return contentStore;

@@ -6,7 +6,7 @@
    <xsl:template match="/">
 
    { alltrades : [
-      <xsl:for-each select="/Record">
+      <xsl:for-each select="Response/Record">
       	 <xsl:variable name="rRIC" select="RIC"/>
       	 <xsl:variable name="rDate" select="Date"/>
       	 <xsl:variable name="rTime" select="Time"/>
@@ -18,25 +18,25 @@
          <xsl:variable name="rBidSize" select="BidSize"/>
          <xsl:variable name="rAskPrice" select="AskPrice"/>
          <xsl:variable name="rAskSize" select="AskSize"/>
-         <xsl:if test="$rType=Trade">
+         <xsl:if test="$rType='Trade'">
             { Response :
              	{
-	             	RIC : <xsl:copy-of select="$rRIC" />,
-	             	Date : <xsl:copy-of select="$rDate" />,
-	             	Time : <xsl:copy-of select="$rTime" />,
-	             	GMT : <xsl:copy-of select="$rGMT" />,
-	             	Type : <xsl:copy-of select="$rType" />,
-	             	Price : <xsl:copy-of select="$rPrice" />,
-	             	Volume : <xsl:copy-of select="$rVolume" />,
-	             	BidPrice : <xsl:copy-of select="$rBidPrice" />,
-	             	BidSize : <xsl:copy-of select="$rBidSize" />,
-	             	AskPrice : <xsl:copy-of select="$rAskPrice" />,
-	             	AskSize : <xsl:copy-of select="$rAskSize" />
+	             	RIC : <xsl:value-of select="$rRIC" />,
+	             	Date : <xsl:value-of select="$rDate" />,
+	             	Time : <xsl:value-of select="$rTime" />,
+	             	GMT : <xsl:value-of select="$rGMT" />,
+	             	Type : <xsl:value-of select="$rType" />,
+	             	Price : <xsl:value-of select="$rPrice" />,
+	             	Volume : <xsl:value-of select="$rVolume" />,
+	             	BidPrice : <xsl:value-of select="$rBidPrice" />,
+	             	BidSize : <xsl:value-of select="$rBidSize" />,
+	             	AskPrice : <xsl:value-of select="$rAskPrice" />,
+	             	AskSize : <xsl:value-of select="$rAskSize" />
              	}
            	}
          </xsl:if>
       </xsl:for-each>
-   ]}
+   ] }
 
    </xsl:template>
 </xsl:stylesheet>

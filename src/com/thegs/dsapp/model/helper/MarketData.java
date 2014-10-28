@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -36,18 +37,85 @@ public class MarketData {
 	private long fileSize;
 	
 	private List<MarketData> md = new ArrayList<MarketData>();
-	//TODO: change this resourcesFolder - it is calling data from elsewhere now
-	private String resourcesFolder = System.getProperty("catalina.home") + "/webapps/ROOT/cs9322ass1/";
+	private String resourcesFolder = System.getProperty("catalina.home") + "/webapps/ROOT/cs9322ass2/";
 
+	public MarketData() {
+		
+	}
 
 	public MarketData(String eventSetId) throws FileNotFoundException, ParseException {
 		readCSV(eventSetId);
 	}
 	
-	private MarketData() {
-		
+	public MarketData(String evId, boolean isURL) throws IOException, ParseException {
+		if (isURL) {
+			getFromURL("http://z3318341.srvr:8080/" + evId + ".csv");
+		}
 	}
 	
+	private void getFromURL(String dataSourceURL) throws IOException, ParseException {
+		URL dataURL = new URL(dataSourceURL);
+        
+        InputStream is = dataURL.openStream();
+        InputStreamReader isr = new InputStreamReader(is);
+        BufferedReader br = new BufferedReader(isr);
+        String theLine;
+        String result = "";
+
+        // Read in the lines
+        while ((theLine = br.readLine()) != null) {
+        	result += theLine + "\n";
+        }
+        
+        Scanner lineScanner = new Scanner(result);
+        lineScanner.nextLine();
+        boolean setStart  = false;
+       //Get all tokens and store them in some data structure
+       
+        while (lineScanner.hasNextLine()) {
+	       	String line = lineScanner.nextLine();
+	       	Scanner scanner = new Scanner(line);
+	       	scanner.useDelimiter(",");
+	       	
+	       	MarketData marketData = new MarketData();
+	       	if(scanner.hasNext())
+	       		marketData.setSec(scanner.next());
+	       	if(scanner.hasNext())
+	       		marketData.setDate(scanner.next());
+	       	if(scanner.hasNext())
+	       		marketData.setTime(scanner.next());
+	       	if (!setStart) {
+	       		Calendar c = convertDate(marketData.getDate());
+	       		convertTime(marketData.getTime(), c);
+	       		this.setStartTime(c);
+	       		setStart = true;
+	       	}
+	   	
+	   		if(scanner.hasNext())
+	       		marketData.setGmtOffset(scanner.next());
+	       	if(scanner.hasNext())
+	       		marketData.setType(scanner.next());
+	       	if(scanner.hasNext())
+	       		marketData.setPrice(scanner.next());
+	       	if(scanner.hasNext())
+	       		marketData.setVolume(scanner.next());
+	       	if(scanner.hasNext())
+	       		marketData.setBidPrice(scanner.next());
+	       	if(scanner.hasNext())
+	       		marketData.setBidSize(scanner.next());
+	       	if(scanner.hasNext())
+	       		marketData.setAskPrice(scanner.next());
+	       	if(scanner.hasNext())
+	       		marketData.setAskSize(scanner.next());
+	       	else
+	       		marketData.setAskSize("");
+	       	md.add(marketData);
+	       	scanner.close();
+       }
+       lineScanner.close();
+
+	}
+
 	public MarketData(String sec2, Calendar startDate, Calendar endDate,
 			String dataSourceURL) throws IOException, IncorrectTimeException, ParseException {
 		this.sec = sec2;
