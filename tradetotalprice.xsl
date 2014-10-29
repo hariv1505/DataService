@@ -1,5 +1,6 @@
 <xsl:stylesheet
      xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+     xmlns:exslt="http://exslt.org/common"
      version="1.1">
 	<xsl:output indent="yes"/>
 
@@ -16,14 +17,7 @@
       </xsl:variable>
 
       <totalpricetrades>
-      	<!-- <xsl:for-each select="$join">
-      		
-      	</xsl:for-each> -->
-      	<!-- <xsl:copy-of select="$join" />  -->
-      	<!-- <xsl:for-each select="$alltrades/alltrades/Price">
-      		<xsl:value-of select="*" />
-      	</xsl:for-each>-->
-         <xsl:value-of select="sum($alltrades//price)"/>
+         <xsl:value-of select="sum(exslt:node-set($alltrades)/alltrades/*)"/>
       </totalpricetrades>
 
    </xsl:template>

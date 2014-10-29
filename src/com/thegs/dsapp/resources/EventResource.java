@@ -188,13 +188,13 @@ public class EventResource {
 		} else {
 			try {
 				e.createXMLFile();
+				return e.getXML();
 			} catch (IOException e1) {
 				e1.printStackTrace();
 				throw new WebApplicationException(Response
 						.status(Response.Status.BAD_REQUEST.getStatusCode())
-						.entity("IO Exception. Cannot write to file.").build());
+						.entity("IO Exception. Cannot use file.").build());
 			}
-			return e.getXML();
 		}
 	}
 	
@@ -250,8 +250,8 @@ public class EventResource {
 						.build());
 			}
 			
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
+		} catch (Exception ex) {
+			ex.printStackTrace();
 			throw new WebApplicationException(Response
 					.status(Response.Status.BAD_REQUEST.getStatusCode())
 					.entity("Bad Request")
